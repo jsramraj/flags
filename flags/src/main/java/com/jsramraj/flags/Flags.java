@@ -20,11 +20,15 @@ public class Flags {
         context = ctx;
     }
 
-    public static BitmapDrawable forCountry(String countryCode) {
+    public static BitmapDrawable forCountry(String countryCode) throws FlagsException {
+        if (context == null) {
+            throw new FlagsException(
+                    "Context is not set. Call Flags.init(getApplicationContext()) before calling this method.");
+        }
         char[] ch = countryCode.toUpperCase().toCharArray();
         int ascii_index = 64;
-        int firstLetterPosition = ch[0] - 64;
-        int secondLetterPosition = ch[1] - 64;
+        int firstLetterPosition = ch[0] - ascii_index;
+        int secondLetterPosition = ch[1] - ascii_index;
 
         Bitmap flags = getImageFromAssetsFile(context, "all_flags.png");
         Bitmap flagForCountry = Bitmap.createBitmap(flags,
@@ -47,5 +51,11 @@ public class Flags {
             e.printStackTrace();
         }
         return image;
+    }
+
+    private static class FlagsException extends UnsupportedOperationException {
+        public FlagsException(String message) {
+            super("com.jsramraj.flags" + message);
+        }
     }
 }
