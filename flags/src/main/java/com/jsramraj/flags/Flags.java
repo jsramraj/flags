@@ -7,8 +7,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 
+import androidx.annotation.VisibleForTesting;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.InvalidParameterException;
 
 public class Flags {
     private static final int FLAG_WIDTH = 32;
@@ -24,6 +27,12 @@ public class Flags {
         if (context == null) {
             throw new FlagsException(
                     "Context is not set. Call Flags.init(getApplicationContext()) before calling this method.");
+        }
+        if (countryCode == null) {
+            throw new NullPointerException("Country code cannot be null. Supply a valid ISO two digit country code. Refer: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2");
+        }
+        if (countryCode.length() != 2) {
+            throw new InvalidParameterException("Country code is not valid. Supply a valid ISO two digit country code. Refer: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2");
         }
         char[] ch = countryCode.toUpperCase().toCharArray();
         int ascii_index = 64;
@@ -53,7 +62,7 @@ public class Flags {
         return image;
     }
 
-    private static class FlagsException extends UnsupportedOperationException {
+    public static class FlagsException extends UnsupportedOperationException {
         public FlagsException(String message) {
             super("com.jsramraj.flags" + message);
         }
