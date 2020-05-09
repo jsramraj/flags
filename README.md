@@ -54,6 +54,13 @@ If, for some reason, you are not okay with adding a entire library, you can stil
 
 That is all!!! you are good to go. 
 
+## I want more clear images
+This library is created to occupy very minimum space. So each flag size is only 32x22. If you want a higher resolution image, all you have to do is give a higher resolution image to this library.
+
+You can use my another tool **flag-sprite-creator** to create higher resolution sprite image. 
+Find our more about the tool [here](https://github.com/jsramraj/flag-sprite-creator).
+The tool is deployed in heroku, you can find it [here](https://flag-sprite-creator.herokuapp.com/)
+
 ## License
 ```
 MIT License
