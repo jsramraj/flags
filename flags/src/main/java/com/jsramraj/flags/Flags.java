@@ -5,31 +5,34 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidParameterException;
 
+
 public class Flags implements FlagDrawableProvider {
-    private static final int FLAG_WIDTH = 32;
-    private static final int FLAG_HEIGHT = 22;
 
     private static Context context;
-    private static Flags flags = new Flags();
-    private Bitmap flagSpriteBitMap = getImageFromAssetsFile(context, "flags_sprite.png");
+    //    private static Flags flags = new Flags();
+    private Bitmap flagSpriteBitMap;
+    private static int tileWidth = 32;
+    private static int tileHeight = 22;
 
+    public Flags(Builder builder) {
+        this.context = builder.context;
+        tileWidth = builder.width > 0 ? builder.width : 32;
+        tileHeight = builder.height > 0 ? builder.height : 22;
+        flagSpriteBitMap = builder.flagSpriteBitMap != null ?
+                builder.flagSpriteBitMap :
+                getImageFromAssetsFile(context, "flags_sprite.png");
 
-    public static FlagDrawableProvider with(@NonNull final Context ctx) {
-        if(!(ctx instanceof AppCompatActivity)) {
+        if (!(context instanceof AppCompatActivity)) {
             throw new IllegalArgumentException("Invalid context, you should pass the context of activity context here");
         }
-        context = ctx;
-        return flags;
     }
 
     public BitmapDrawable forCountry(String countryCode) throws FlagsException {
@@ -49,11 +52,10 @@ public class Flags implements FlagDrawableProvider {
         int secondLetterPosition = ch[1] - ascii_index;
 
         Bitmap flagForCountry = Bitmap.createBitmap(flagSpriteBitMap,
-                firstLetterPosition * FLAG_WIDTH,
-                secondLetterPosition * FLAG_HEIGHT,
-                FLAG_WIDTH,
-                FLAG_HEIGHT);
-        Log.d("TTA", String.valueOf(flags));
+                firstLetterPosition * tileWidth,
+                secondLetterPosition * tileHeight,
+                tileWidth,
+                tileHeight);
         return new BitmapDrawable(context.getResources(), flagForCountry);
     }
 
@@ -68,6 +70,38 @@ public class Flags implements FlagDrawableProvider {
             e.printStackTrace();
         }
         return image;
+    }
+
+    public static class Builder {
+
+        private final Context context;
+        private Bitmap flagSpriteBitMap;
+        private int width;
+        private int height;
+
+        public Builder(@NonNull Context context) {
+            this.context = context;
+        }
+
+        public Builder setSourceImage(Bitmap bitmap) {
+            this.flagSpriteBitMap = bitmap;
+            return this;
+        }
+
+        public Builder setTileWidth(int width) {
+            this.width = width;
+            return this;
+        }
+
+        public Builder setTileHeight(int height) {
+            this.height = height;
+            return this;
+        }
+
+        public Flags build() {
+            return new Flags(this);
+        }
+
     }
 
     public static class FlagsException extends UnsupportedOperationException {

@@ -23,7 +23,7 @@ public class CountryAdapter implements ListAdapter {
     public CountryAdapter(Context context, ArrayList<Country> countries) {
         this.countries = countries;
         this.context = context;
-        flagsObject = Flags.with(context);
+        flagsObject = new Flags.Builder(context).build();
     }
 
     @Override
