@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.jsramraj.flags.FlagDrawableProvider;
 import com.jsramraj.flags.Flags;
 
 import java.util.ArrayList;
@@ -17,10 +18,12 @@ public class CountryAdapter implements ListAdapter {
 
     private final ArrayList<Country> countries;
     private final Context context;
+    private FlagDrawableProvider flagsObject;
 
     public CountryAdapter(Context context, ArrayList<Country> countries) {
         this.countries = countries;
         this.context = context;
+        flagsObject = Flags.with(context);
     }
 
     @Override
@@ -67,7 +70,7 @@ public class CountryAdapter implements ListAdapter {
             TextView nameTextView = convertView.findViewById(R.id.name);
             ImageView flagIconViewview = convertView.findViewById(R.id.icon);
             nameTextView.setText(country.getName());
-            flagIconViewview.setImageDrawable(Flags.forCountry(country.getCode()));
+            flagIconViewview.setImageDrawable(flagsObject.forCountry((country.getCode())));
         }
         return convertView;    }
 

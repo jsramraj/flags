@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Flags.init(this);
 //        findViewById(R.id.flagIcon).setBackground(Flags.forCountry("IN"));
 
         ArrayList<Country> countries = new ArrayList<>();

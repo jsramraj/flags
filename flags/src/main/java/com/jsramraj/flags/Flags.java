@@ -7,23 +7,30 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidParameterException;
 
-public class Flags {
+public class Flags implements FlagDrawableProvider {
     private static final int FLAG_WIDTH = 32;
     private static final int FLAG_HEIGHT = 22;
 
     private static Context context;
+    private static Flags flags = new Flags();
 
-    public static void init(final Context ctx) {
+    public static FlagDrawableProvider with(@NonNull final Context ctx) {
+        if(!(ctx instanceof AppCompatActivity)) {
+            throw new IllegalArgumentException("Invalid context, you should pass the context of activity context here");
+        }
         context = ctx;
+        return flags;
     }
 
-    public static BitmapDrawable forCountry(String countryCode) throws FlagsException {
+    public BitmapDrawable forCountry(String countryCode) throws FlagsException {
         if (context == null) {
             throw new FlagsException(
                     "Context is not set. Call Flags.init(getApplicationContext()) before calling this method.");
@@ -39,7 +46,7 @@ public class Flags {
         int firstLetterPosition = ch[0] - ascii_index;
         int secondLetterPosition = ch[1] - ascii_index;
 
-        Bitmap flags = getImageFromAssetsFile(context, "all_flags.png");
+        Bitmap flags = getImageFromAssetsFile(context, "flags_sprite.png");
         Bitmap flagForCountry = Bitmap.createBitmap(flags,
                 firstLetterPosition * FLAG_WIDTH,
                 secondLetterPosition * FLAG_HEIGHT,
