@@ -21,6 +21,8 @@ public class Flags implements FlagDrawableProvider {
 
     private static Context context;
     private static Flags flags = new Flags();
+    private Bitmap flagSpriteBitMap = getImageFromAssetsFile(context, "flags_sprite.png");
+
 
     public static FlagDrawableProvider with(@NonNull final Context ctx) {
         if(!(ctx instanceof AppCompatActivity)) {
@@ -46,8 +48,7 @@ public class Flags implements FlagDrawableProvider {
         int firstLetterPosition = ch[0] - ascii_index;
         int secondLetterPosition = ch[1] - ascii_index;
 
-        Bitmap flags = getImageFromAssetsFile(context, "flags_sprite.png");
-        Bitmap flagForCountry = Bitmap.createBitmap(flags,
+        Bitmap flagForCountry = Bitmap.createBitmap(flagSpriteBitMap,
                 firstLetterPosition * FLAG_WIDTH,
                 secondLetterPosition * FLAG_HEIGHT,
                 FLAG_WIDTH,
