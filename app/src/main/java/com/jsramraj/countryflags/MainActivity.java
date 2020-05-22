@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements FlagSelectionObse
                         countryJSONObject.getString("dial_code"),
                         countryJSONObject.getString("code")));
             }
+
             //sort the countries by country name alphabetically
             countries.sort(new Comparator<Country>() {
                 @Override

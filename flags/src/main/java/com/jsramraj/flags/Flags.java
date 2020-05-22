@@ -17,12 +17,11 @@ import java.security.InvalidParameterException;
 public class Flags implements FlagDrawableProvider {
 
     private Context context;
-    //    private static Flags flags = new Flags();
     private Bitmap flagSpriteBitMap;
     private int tileWidth;
     private int tileHeight;
 
-    public Flags(Builder builder) {
+    private Flags(Builder builder) {
         this.context = builder.context;
         tileWidth = builder.width > 0 ? builder.width : 32;
         tileHeight = builder.height > 0 ? builder.height : 22;
@@ -35,6 +34,15 @@ public class Flags implements FlagDrawableProvider {
         }
     }
 
+    /**
+     * Crops the flag icon for the given country code from the big sprite image of all the flag icons
+     * The country code should be only two character and should follow the ISO_3166-1 standard as mentioned in https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
+     * If not, this method will raise FlagsException
+     *
+     * @param countryCode Two character country code
+     * @return Flag icon of the given country code in Bitmap format
+     * @throws FlagsException
+     */
     public BitmapDrawable forCountry(String countryCode) throws FlagsException {
         if (context == null) {
             throw new FlagsException(
@@ -72,6 +80,9 @@ public class Flags implements FlagDrawableProvider {
         return image;
     }
 
+    /**
+     * Builder class to create the Flags object
+     */
     public static class Builder {
 
         private final Context context;
@@ -79,25 +90,51 @@ public class Flags implements FlagDrawableProvider {
         private int width;
         private int height;
 
+        /**
+         * Constructor. Initiate the builder with a valid context.
+         * @param context Activity context
+         */
         public Builder(@NonNull Context context) {
             this.context = context;
         }
 
+        /**
+         * Optionally, you can supply your own source sprite image if you want.
+         * Visit https://github.com/jsramraj/flag-sprite-creator to know how you can create your own sprite image
+         * If you supply your own source image, make sure you also set the correct tile width and tile height
+         *
+         * @param bitmap Source sprite image in bitmap format
+         * @return Builder object
+         */
         public Builder setSourceImage(Bitmap bitmap) {
             this.flagSpriteBitMap = bitmap;
             return this;
         }
 
+        /**
+         * Sets width of the individual flag icon in the source image
+         * @param width Width of each flag icon
+         * @return Builder object
+         */
         public Builder setTileWidth(int width) {
             this.width = width;
             return this;
         }
 
+        /**
+         * Sets Height of the individual flag icon in the source image
+         * @param height Height of each flag icon
+         * @return Builder object
+         */
         public Builder setTileHeight(int height) {
             this.height = height;
             return this;
         }
 
+        /**
+         * Creates the flags object from the given builder configuration
+         * @return Created Flags object
+         */
         public Flags build() {
             return new Flags(this);
         }
