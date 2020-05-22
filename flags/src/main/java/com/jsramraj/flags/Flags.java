@@ -16,11 +16,11 @@ import java.security.InvalidParameterException;
 
 public class Flags implements FlagDrawableProvider {
 
-    private static Context context;
+    private Context context;
     //    private static Flags flags = new Flags();
     private Bitmap flagSpriteBitMap;
-    private static int tileWidth = 32;
-    private static int tileHeight = 22;
+    private int tileWidth;
+    private int tileHeight;
 
     public Flags(Builder builder) {
         this.context = builder.context;

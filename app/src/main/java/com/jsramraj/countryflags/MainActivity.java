@@ -3,10 +3,18 @@ package com.jsramraj.countryflags;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.jsramraj.flags.FlagDrawableProvider;
 import com.jsramraj.flags.Flags;
 
 import org.json.JSONArray;
@@ -17,17 +25,39 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Comparator;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FlagSelectionObserver {
+
+    private FlagDrawableProvider flagDrawableProvider;
+
+    private static Bitmap getImageFromAssetsFile(Context mContext, String fileName) {
+        Bitmap image = null;
+        AssetManager am = mContext.getResources().getAssets();
+        try {
+            InputStream is = am.open(fileName);
+            image = BitmapFactory.decodeStream(is);
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return image;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        findViewById(R.id.flagIcon).setBackground(Flags.forCountry("IN"));
+        flagDrawableProvider = new Flags.Builder(this)
+                .setSourceImage(getImageFromAssetsFile(this, "flags_sprite_big.png"))
+                .setTileWidth(320)
+                .setTileHeight(220)
+                .build();
 
-        ArrayList<Country> countries = new ArrayList<>();
+        ((ImageView)findViewById(R.id.selectedCountry)).setImageDrawable(flagDrawableProvider.forCountry("US"));
+
+        final ArrayList<Country> countries = new ArrayList<>();
         String countryDataJson = readJSONFromAsset(this, "country_list.json");
         try {
             JSONArray countryData = new JSONArray(countryDataJson);
@@ -37,6 +67,13 @@ public class MainActivity extends AppCompatActivity {
                         countryJSONObject.getString("dial_code"),
                         countryJSONObject.getString("code")));
             }
+            //sort the countries by country name alphabetically
+            countries.sort(new Comparator<Country>() {
+                @Override
+                public int compare(Country c1, Country c2) {
+                    return c1.getName().compareToIgnoreCase(c2.getName());
+                }
+            });
             CountryAdapter adapter = new CountryAdapter(this, countries);
             ListView countryListView = findViewById(R.id.country_list_view);
             countryListView.setAdapter(adapter);
@@ -57,5 +94,10 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException ex) {
             return null;
         }
+    }
+
+    @Override
+    public void onFlagSelected(String countryCode) {
+        ((ImageView)findViewById(R.id.selectedCountry)).setImageDrawable(flagDrawableProvider.forCountry(countryCode));
     }
 }

@@ -2,6 +2,7 @@ package com.jsramraj.countryflags;
 
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,7 @@ public class CountryAdapter implements ListAdapter {
     private final Context context;
     private FlagDrawableProvider flagsObject;
 
-    public CountryAdapter(Context context, ArrayList<Country> countries) {
+    public CountryAdapter(MainActivity context, ArrayList<Country> countries) {
         this.countries = countries;
         this.context = context;
         flagsObject = new Flags.Builder(context).build();
@@ -58,13 +59,14 @@ public class CountryAdapter implements ListAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Country country = countries.get(position);
-        if(convertView == null) {
+        final Country country = countries.get(position);
+        if (convertView == null) {
             LayoutInflater layoutInflater = LayoutInflater.from(context);
             convertView = layoutInflater.inflate(R.layout.list_row, null);
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    ((FlagSelectionObserver) context).onFlagSelected(country.getCode());
                 }
             });
             TextView nameTextView = convertView.findViewById(R.id.name);
@@ -72,7 +74,8 @@ public class CountryAdapter implements ListAdapter {
             nameTextView.setText(country.getName());
             flagIconViewview.setImageDrawable(flagsObject.forCountry((country.getCode())));
         }
-        return convertView;    }
+        return convertView;
+    }
 
     @Override
     public int getItemViewType(int position) {
