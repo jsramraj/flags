@@ -16,14 +16,33 @@ Unlike all the other libraries, this one includes only **ONE**
 which consists of all the icons of
 all the flags. And the icons are sliced from the sprite image when requested.
 
-### Demo Screenshot
-<img src="./demo/flags.png" width="40%">
+### Demo
+<img src="./demo/flags-demo.gif" width="40%">
 
 ## Usage
+### Simple Use
 ```java
-BitmapDrawable usFlag = Flags.forCountry("US")
+FlagDrawableProvider flagProvider = new Flags.Builder(context)
+											 .build();
+BitmapDrawable usFlag = flagProvider.forCountry("US")
 ```
 That is all
+
+### Supply your own source image
+By default, the flags library uses a 94 kb sprite image with flag icons with size of 32 x 22.
+
+In some cases, this may not be suitable for you. So you can supply your own sprite image with a higher resolution for cases like that.
+
+This is how you supply your source image. Make sure you also give the correct height and width of flag tiles.
+
+```java
+FlagDrawableProvider largeFlagProvider = new Flags.Builder(this)
+                .setSourceImage(getImageFromAssetsFile(this, "flags_sprite_big.png"))
+                .setTileWidth(320)
+                .setTileHeight(220)
+                .build();
+```
+To create a sprite image with higher resolution, visit the [Want high res icons?](#Want-high-res-icons?) section
 
 ## How to include
 ### As a dependency
@@ -31,8 +50,7 @@ That is all
 Add it in your root build.gradle at the end of repositories:
 ```groovy
 allprojects {
-	repositories {
-		...
+	repositories {		
 		maven { url 'https://jitpack.io' }
 	}
 }
@@ -54,7 +72,7 @@ If, for some reason, you are not okay with adding a entire library, you can stil
 
 That is all!!! you are good to go. 
 
-## I want more clear images
+## Want high res icons?
 This library is created to occupy very minimum space. So each flag size is only 32x22. If you want a higher resolution image, all you have to do is give a higher resolution image to this library.
 
 You can use my another tool **flag-sprite-creator** to create higher resolution sprite image. 
