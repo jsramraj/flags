@@ -1,18 +1,14 @@
 package com.jsramraj.countryflags;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.jsramraj.flags.FlagDrawableProvider;
 import com.jsramraj.flags.Flags;
@@ -25,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 
 public class MainActivity extends AppCompatActivity implements FlagSelectionObserver {
@@ -55,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements FlagSelectionObse
                 .setTileHeight(220)
                 .build();
 
-        ((ImageView)findViewById(R.id.selectedCountry)).setImageDrawable(flagDrawableProvider.forCountry("US"));
+        ((ImageView) findViewById(R.id.selectedCountry)).setImageDrawable(flagDrawableProvider.forCountry("US"));
 
         final ArrayList<Country> countries = new ArrayList<>();
         String countryDataJson = readJSONFromAsset(this, "country_list.json");
@@ -69,12 +66,13 @@ public class MainActivity extends AppCompatActivity implements FlagSelectionObse
             }
 
             //sort the countries by country name alphabetically
-            countries.sort(new Comparator<Country>() {
-                @Override
-                public int compare(Country c1, Country c2) {
-                    return c1.getName().compareToIgnoreCase(c2.getName());
-                }
-            });
+            Collections.sort(
+                    countries, new Comparator<Country>() {
+                        @Override
+                        public int compare(Country c1, Country c2) {
+                            return c1.getName().compareToIgnoreCase(c2.getName());
+                        }
+                    });
             CountryAdapter adapter = new CountryAdapter(this, countries);
             ListView countryListView = findViewById(R.id.country_list_view);
             countryListView.setAdapter(adapter);
@@ -99,6 +97,6 @@ public class MainActivity extends AppCompatActivity implements FlagSelectionObse
 
     @Override
     public void onFlagSelected(String countryCode) {
-        ((ImageView)findViewById(R.id.selectedCountry)).setImageDrawable(flagDrawableProvider.forCountry(countryCode));
+        ((ImageView) findViewById(R.id.selectedCountry)).setImageDrawable(flagDrawableProvider.forCountry(countryCode));
     }
 }
